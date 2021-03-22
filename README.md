@@ -19,3 +19,24 @@ Flutterのweb版での環境構築です。
     ```
     docker exec -it flutter bash
     ```
+1. flutterアプリを作成
+    ```
+    flutter create .
+    ```
+1. サーバーを起動
+    ```
+    flutter run -d web-server --web-port=${WEB_SERVER_PORT} --web-hostname 0.0.0.0
+    ```
+    下記が表示されたらhttp://localhost:8888にアクセスすればOK
+    ```shell
+    To hot restart changes while running, press "r" or "R".
+    For a more detailed help message, press "h". To quit, press "q".
+    ```
+1. Flutterをアップグレードする場合
+    ```
+    flutter upgrade
+    ```
+1. Webをビルドする場合
+    ```
+    flutter build web
+    ```
