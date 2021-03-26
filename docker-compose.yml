@@ -12,7 +12,10 @@ services:
     build:
       context: .
       args:
-        - UBUNTU_VERSION=${UBUNTU_VERSION}
+        - ubuntu_version=${UBUNTU_VERSION}
+        - timezone=${TIMEZONE}
+        - web_server_port=${WEB_SERVER_PORT}
+        - app_code_path_container=${APP_CODE_PATH_CONTAINER}
     tty: true
     env_file: .env
     volumes:

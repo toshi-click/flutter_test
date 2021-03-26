@@ -1,16 +1,18 @@
-ARG UBUNTU_VERSION
+ARG ubuntu_version
+ARG timezone
+ARG web_server_port
+ARG app_code_path_container
+
 # https://hub.docker.com/_/ubuntu/
-FROM ubuntu:${UBUNTU_VERSION}
+FROM ubuntu:${ubuntu_version}
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV LC_ALL=ja_JP.UTF-8
 ENV LC_CTYPE=ja_JP.UTF-8
 ENV LANGUAGE=ja_JP:jp
-ARG SDK_BASE_DIR
-ENV SDK_BASE_DIR=${SDK_BASE_DIR}
-ARG TIMEZONE
-ENV TZ=${TIMEZONE}
-ARG WEB_SERVER_PORT
+ENV TZ $timezone
+ENV WEB_SERVER_PORT $web_server_port
+ENV APP_CODE_PATH_CONTAINER $app_code_path_container
 
 # Ubuntu base setting (locale and timezone and devtool)
 RUN apt-get update \
@@ -40,16 +42,16 @@ RUN apt-get update && \
     && rm -rf /var/lib/apt/lists/*
 
 # Prepare Android directories and system variables
-WORKDIR ${SDK_BASE_DIR}
+WORKDIR /usr/local
 RUN mkdir -p Android/sdk
-ENV ANDROID_SDK_ROOT ${SDK_BASE_DIR}/Android/sdk
+ENV ANDROID_SDK_ROOT /usr/local/Android/sdk
 RUN mkdir -p .android && touch .android/repositories.cfg
 RUN wget -O sdk-tools.zip https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip
 RUN unzip sdk-tools.zip && rm sdk-tools.zip
 RUN mv tools Android/sdk/tools
 RUN cd Android/sdk/tools/bin && yes | ./sdkmanager --licenses
 RUN cd Android/sdk/tools/bin && ./sdkmanager "build-tools;29.0.2" "patcher;v4" "platform-tools" "platforms;android-29" "sources;android-29"
-ENV PATH "$PATH:${SDK_BASE_DIR}/Android/sdk/platform-tools"
+ENV PATH "$PATH:/usr/local/Android/sdk/platform-tools"
 
 # Dart
 RUN sh -c 'curl https://storage.googleapis.com/download.dartlang.org/linux/debian/dart_stable.list > /etc/apt/sources.list.d/dart_stable.list'
@@ -61,9 +63,8 @@ RUN apt-get update && \
 
 # Download Flutter SDK
 RUN git clone https://github.com/flutter/flutter.git
-ENV PATH "$PATH:${SDK_BASE_DIR}/flutter/bin"
+ENV PATH "$PATH:/usr/local/flutter/bin"
 
-WORKDIR ${APP_CODE_PATH_CONTAINER}
 RUN flutter config --enable-web
 RUN flutter doctor
 

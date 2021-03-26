@@ -21,6 +21,7 @@ Flutterのweb版での環境構築です。
     ```
 1. flutterアプリを作成
     ```
+    cd ${APP_CODE_PATH_CONTAINER}
     flutter create .
     ```
 1. サーバーを起動
